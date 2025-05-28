@@ -33,6 +33,10 @@ public:
 		state = hidden;
 	}
 
+	PanelState GetState()
+	{
+		return state;
+	}
 
 	void update()
 	{

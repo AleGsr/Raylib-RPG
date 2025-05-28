@@ -25,6 +25,26 @@ void Inventory::nextItem()
 	}
 }
 
+void Inventory::prevItem()
+{
+	if (currentItem == nullptr)
+	{
+		currentItem = tail;
+		return;
+	}
+
+	if (currentItem->prev != nullptr)
+	{
+		currentItem = currentItem->prev;
+	}
+	else // ya estamos en el head, volvemos al tail
+	{
+		currentItem = tail;
+	}
+
+
+}
+
 void Inventory::debugPrintContents()
 {
 	//iterar en la lista

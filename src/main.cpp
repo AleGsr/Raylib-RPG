@@ -1,3 +1,4 @@
+//Alejandra Gabriela Sandoval Ruíz
 /*
 Raylib example file.
 This is an example main file for a simple raylib project.
@@ -13,6 +14,7 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include <string>
 #include <iostream>
 #include <limits>
+#include <cstdio>
 
 
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
@@ -25,6 +27,9 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "Queue.h"
 #include "PanelMensaje.h"
 #include "Enemy.h"
+#include "MessageSystem.h"
+#include "Heap.h"
+#include "ObjectChest.h"
 
 extern "C"
 {
@@ -32,7 +37,7 @@ extern "C"
 
 }
 
-
+MessageSystem* messageSystem;
 
 // Definición de mapa 2D
 typedef std::vector<std::vector<int>> Map2D;
@@ -95,14 +100,33 @@ Music LoadBGM(const char* filename)
 	//}
 }
 
-Vector2 posPlayer = { 0,0 };
-Vector2 velPlayer = { 0,0 };
 
-Vector2 posEnemy = { 0,0 };
 
+//Arreglo de game objects
+std::vector<GameObject*> gameobjects;
 
 int main()
 {
+	//Tamaño de los tileSize
+	int tileSize = 50;
+	//Calcular ventana en base al tileSize
+	int maxTilesH = 20;
+	int maxTilesV = 16;
+
+
+	// Tell the window to use vsync and work on high DPI displays
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+
+	// Create the window and OpenGL context
+	InitWindow(maxTilesH * tileSize, maxTilesV * tileSize, "Tiles");
+
+	InitAudioDevice();
+
+	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
+	SearchAndSetResourceDir("resources");
+
+
+
 
 	// Ejemplo de vector
 	std::vector<int> misdatos(15, 0);
@@ -110,13 +134,13 @@ int main()
 		std::cout << "valor: " << misdatos[i] << std::endl;
 
 	//Purueba de lista Ligada
-   /* int a = 16;
+    int a = 16;
 	LLNode<int>* nodo = new LLNode<int>(&a);
 
 	LinkedList<int>* lista = new LinkedList<int>(nodo);
 	lista->AddNode(new int(28));
 	lista->AddNode(new int(28));
-	lista->RemoveLastNode();*/
+	lista->RemoveLastNode();
 
 	//Prueba de stack o pila
 	Stack<float> pila(10);
@@ -148,6 +172,15 @@ int main()
 	q.debugPrintContents();
 
 
+
+	//std::vector<int> misdatos(15, 0);
+	//for (int i = 0; i < 15; i++)
+	//	std::cout << "valor: " << misdatos[i] << std::endl;
+	const char* maps[3] = { "map1.txt", "map2.txt", "map3.txt" };
+	const char* musicTracks[3] = { "ILUETNI.XM", "TECNO1.XM", "LIRIUM.XM" };
+
+
+
 	//Prubea de Inventario
 	Inventory* inventario = new Inventory();
 	inventario->AddItem(new Item("Espada", 1));
@@ -157,41 +190,29 @@ int main()
 
 
 
-
-
-
-
-	//std::vector<int> misdatos(15, 0);
-	//for (int i = 0; i < 15; i++)
-	//	std::cout << "valor: " << misdatos[i] << std::endl;
-	const char* maps[3] = { "map1.txt", "map2.txt", "map3.txt" };
-	const char* musicTracks[3] = { "ILUETNI.XM", "TECNO1.XM", "LIRIUM.XM" };
-
-	//Tamaño de los tileSize
-	int tileSize = 50;
-	//Calcular ventana en base al tileSize
-	int maxTilesH = 20;
-	int maxTilesV = 16;
-
-	// Tell the window to use vsync and work on high DPI displays
-	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
-
-
-
-
-
-
+	//Player
 	PlayerCharacter* player = new PlayerCharacter("player1");
 	player->Start();
 	player->inventory = inventario;
 	player->printUID();
 
 
-	//hacer unos dos o tres enemigos que se muevan hacia el jugador
+	//Enemy
 	Enemy* enemy = new Enemy("enemy1");
 	enemy->Start();
 	enemy->printUID();
 
+
+	//Objects
+	ObjectChest* objChest = new ObjectChest("objChest1");
+	objChest->Start();
+	objChest->printUID();
+
+
+	//Arreglo de objectos a la lista de GameObject
+	gameobjects.push_back(player);
+	gameobjects.push_back(enemy);
+	gameobjects.push_back(objChest);
 
 
 
@@ -200,15 +221,25 @@ int main()
 
 
 
+
+
+
 	//panelmensaje
 	PanelMensaje* panel = new PanelMensaje(GetScreenWidth() - 210, 200, 50, 2);
-
 
 	//para la prueba, simularemos que obtiene de golpe un puñado de logros
 	panel->Show("thief");
 	panel->Show("gossip");
 	panel->Show("fisher");
 	panel->Show("hoarder");
+
+	messageSystem = new MessageSystem();
+
+	// Agrega varios logros a la pila de mensajes
+	messageSystem->AgregarMensaje("thief");
+	messageSystem->AgregarMensaje("gossip");
+	messageSystem->AgregarMensaje("fisher");
+	messageSystem->AgregarMensaje("hoarder");
 
 
 
@@ -230,13 +261,6 @@ int main()
 
 
 
-	// Create the window and OpenGL context
-	InitWindow(maxTilesH * tileSize, maxTilesV * tileSize, "Tiles"); 
-
-	InitAudioDevice();
-
-	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
-	SearchAndSetResourceDir("resources");
 
 	//Modo C para crear un mapa 2D
 	//char** tilemap  = (char**) malloc(maxTilesV * sizeof(char*));
@@ -274,27 +298,9 @@ int main()
 	
 
 
-
-	Texture wabbit = LoadTexture("wabbit_alpha.png");
-	Texture enemyImg = LoadTexture("Enemy.png");
-
 	int selectedMapIndex = -1;
 	while (!WindowShouldClose() && selectedMapIndex == -1)
 	{
-
-		player->Update();
-		panel->update();
-		enemy->Update();
-
-
-
-		if (IsKeyPressed(KEY_SPACE))
-		{
-			panel->Show("Hola mundo");
-
-		}
-
-
 
 		//Menú
 		BeginDrawing();
@@ -336,33 +342,35 @@ int main()
 	Music bgm = LoadBGM(selectedMusic.c_str());
 	PlayMusicStream(bgm);
 
-	posPlayer = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 
 	// game loop
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
-		UpdateMusicStream(bgm);
-		velPlayer = { 0,0 };
 
-		//Inputs
-		if (IsKeyDown(KEY_W))
+		// Update
+		for (GameObject* obj : gameobjects)
 		{
-			velPlayer.y = -500;
+			obj->Update();
 		}
-		if (IsKeyDown(KEY_A))
+
+		messageSystem->Update();
+
+
+
+		//if (IsKeyPressed(KEY_SPACE))
+		//{
+		//	panel->Show("Hola mundo");
+
+		//}
+		if (IsKeyPressed(KEY_M))
 		{
-			velPlayer.x = -500;
+			messageSystem->AgregarMensaje("¡Nuevo mensaje desbloqueado!");
 		}
-		if (IsKeyDown(KEY_S))
-		{
-			velPlayer.y = 500;
-		}
-		if (IsKeyDown(KEY_D))
-		{
-			velPlayer.x = 500;
-		}
-		posPlayer.x += velPlayer.x * GetFrameTime();
-		posPlayer.y += velPlayer.y * GetFrameTime();
+
+
+		UpdateMusicStream(bgm);
+		
+
 
 		// drawing
 		BeginDrawing();
@@ -377,18 +385,18 @@ int main()
 		}
 
 		// draw some text using the default font
-		DrawText("Tiles", 20, 20, 20, YELLOW);
+		//DrawText("Tiles", 20, 20, 20, YELLOW);
+		
+		for (GameObject* obj : gameobjects)
+		{
+			if (obj->isEnabled())
+			{
+				obj->Draw();
 
-		// draw our texture to the screen
-		DrawTexture(wabbit, (int)posPlayer.x, (int)posPlayer.y, WHITE);
-		DrawTexture(enemyImg, (int)posEnemy.x, (int)posEnemy.y, WHITE);
+			}
+		}
 
-
-		player->Draw();
-		panel->draw();
-		enemy->Draw();
-
-		//Panel
+		messageSystem->Draw();
 
 
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
@@ -397,8 +405,14 @@ int main()
 
 	// cleanup
 	// unload our texture so it can be cleaned up
-	UnloadTexture(wabbit);
-	UnloadTexture(enemyImg);
+
+
+	for (GameObject* obj : gameobjects)
+	{
+		delete obj;
+	}
+	
+	delete messageSystem;
 	UnloadMusicStream(bgm);
 	CloseAudioDevice();
 	// destroy the window and cleanup the OpenGL context

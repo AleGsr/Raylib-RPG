@@ -530,11 +530,14 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\Enemy.h" />
     <ClInclude Include="..\..\include\GameObject.h" />
+    <ClInclude Include="..\..\include\Heap.h" />
     <ClInclude Include="..\..\include\Inventory.h" />
     <ClInclude Include="..\..\include\Item.h" />
     <ClInclude Include="..\..\include\LinkedList.h" />
     <ClInclude Include="..\..\include\LLNode.h" />
     <ClInclude Include="..\..\include\md5.h" />
+    <ClInclude Include="..\..\include\MessageSystem.h" />
+    <ClInclude Include="..\..\include\ObjectChest.h" />
     <ClInclude Include="..\..\include\PanelMensaje.h" />
     <ClInclude Include="..\..\include\PlayerCharacter.h" />
     <ClInclude Include="..\..\include\Queue.h" />
@@ -544,12 +547,15 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\Enemy.cpp" />
     <ClCompile Include="..\..\src\GameObject.cpp" />
+    <ClCompile Include="..\..\src\Heap.cpp" />
     <ClCompile Include="..\..\src\Inventory.cpp" />
     <ClCompile Include="..\..\src\Item.cpp" />
     <ClCompile Include="..\..\src\LinkedList.cpp" />
     <ClCompile Include="..\..\src\LLNode.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\md5.c" />
+    <ClCompile Include="..\..\src\MessageSystem.cpp" />
+    <ClCompile Include="..\..\src\ObjectChest.cpp" />
     <ClCompile Include="..\..\src\PanelMensaje.cpp" />
     <ClCompile Include="..\..\src\PlayerCharacter.cpp" />
     <ClCompile Include="..\..\src\Queue.cpp" />

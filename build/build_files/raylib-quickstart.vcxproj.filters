@@ -39,6 +39,13 @@
     <ClInclude Include="..\..\include\md5.h" />
     <ClInclude Include="..\..\include\GameObject.h" />
     <ClInclude Include="..\..\include\Enemy.h" />
+    <ClInclude Include="..\..\include\MessageSystem.h" />
+    <ClInclude Include="..\..\include\Heap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ObjectChest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
@@ -71,5 +78,12 @@
     <ClCompile Include="..\..\src\md5.c" />
     <ClCompile Include="..\..\src\GameObject.cpp" />
     <ClCompile Include="..\..\src\Enemy.cpp" />
+    <ClCompile Include="..\..\src\MessageSystem.cpp" />
+    <ClCompile Include="..\..\src\Heap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ObjectChest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

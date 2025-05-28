@@ -12,6 +12,7 @@ public:
     void AddItem(Item* _item);
 
     void nextItem();
+    void prevItem();
 
     void debugPrintContents();
 
