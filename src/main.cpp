@@ -28,12 +28,13 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "PanelMensaje.h"
 #include "Enemy.h"
 #include "MessageSystem.h"
-#include "Heap.h"
+#include "GameObject.h"
 #include "ObjectChest.h"
+#include "Heap.h"
 
 extern "C"
 {
-	#include "md5.h"
+#include "md5.h"
 
 }
 
@@ -47,7 +48,7 @@ std::string selectedMusic = "ILUETNI.XM";
 
 void LoadMap(Map2D& _map, size_t _x, size_t _y, const std::string& filename)
 {
-	std::ifstream filemap(filename); 
+	std::ifstream filemap(filename);
 	if (filemap.is_open())
 	{
 		char c;
@@ -101,6 +102,7 @@ Music LoadBGM(const char* filename)
 }
 
 
+Vector2 posEnemy = { 0,0 };
 
 //Arreglo de game objects
 std::vector<GameObject*> gameobjects;
@@ -114,9 +116,6 @@ int main()
 	int maxTilesV = 16;
 
 
-	// Tell the window to use vsync and work on high DPI displays
-	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
-
 	// Create the window and OpenGL context
 	InitWindow(maxTilesH * tileSize, maxTilesV * tileSize, "Tiles");
 
@@ -126,15 +125,13 @@ int main()
 	SearchAndSetResourceDir("resources");
 
 
-
-
 	// Ejemplo de vector
 	std::vector<int> misdatos(15, 0);
 	for (int i = 0; i < 15; i++)
 		std::cout << "valor: " << misdatos[i] << std::endl;
 
 	//Purueba de lista Ligada
-    int a = 16;
+	int a = 16;
 	LLNode<int>* nodo = new LLNode<int>(&a);
 
 	LinkedList<int>* lista = new LinkedList<int>(nodo);
@@ -172,6 +169,9 @@ int main()
 	q.debugPrintContents();
 
 
+	// Tell the window to use vsync and work on high DPI displays
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+
 
 	//std::vector<int> misdatos(15, 0);
 	//for (int i = 0; i < 15; i++)
@@ -190,23 +190,24 @@ int main()
 
 
 
-	//Player
+
 	PlayerCharacter* player = new PlayerCharacter("player1");
 	player->Start();
 	player->inventory = inventario;
-	player->printUID();
+	player->drawDebugUID = true;
+	//player->printUID();
 
 
-	//Enemy
+	//hacer unos dos o tres enemigos que se muevan hacia el jugador
 	Enemy* enemy = new Enemy("enemy1");
+	enemy->playerFollow = player;
 	enemy->Start();
-	enemy->printUID();
+	//enemy->printUID();
 
 
-	//Objects
-	ObjectChest* objChest = new ObjectChest("objChest1");
+	ObjectChest* objChest = new ObjectChest("objChest");
 	objChest->Start();
-	objChest->printUID();
+	//objChest->printUID();
 
 
 	//Arreglo de objectos a la lista de GameObject
@@ -215,17 +216,14 @@ int main()
 	gameobjects.push_back(objChest);
 
 
-
 	//todos los gameobjects deberemos guardar su uid en esta tabla
 	//tablahash(nombre,uid)
 
 
 
-
-
-
 	//panelmensaje
 	PanelMensaje* panel = new PanelMensaje(GetScreenWidth() - 210, 200, 50, 2);
+
 
 	//para la prueba, simularemos que obtiene de golpe un puñado de logros
 	panel->Show("thief");
@@ -242,8 +240,6 @@ int main()
 	messageSystem->AgregarMensaje("hoarder");
 
 
-
-
 	//Prueba de calculo de hash md5 usando la biblioteca de zunawe
 	uint8_t result[16];
 	char* mensaje = "hola mundo";
@@ -251,7 +247,7 @@ int main()
 	//imprimir el hash en hexadecimal
 	//printHash
 	std::cout << "hash computado: ";
-	for (int i = 0; i < 16;i++)
+	for (int i = 0; i < 16; i++)
 	{
 		//std::cout << std::hex << result[i];
 		printf("%02X", result[i]);
@@ -261,31 +257,30 @@ int main()
 
 
 
-
 	//Modo C para crear un mapa 2D
-	//char** tilemap  = (char**) malloc(maxTilesV * sizeof(char*));
-	//if (tilemap == NULL)
-	//{
-	//	return 1;
-	//}
-	////columna
-	//for (int i= 0; i < maxTilesV; i++)
-	//{
-	//	tilemap[i] = (char*)malloc(maxTilesH * sizeof(char));
-	// memset(tilemap[i], 0, maxTilesH * sizeof(char));
-	//	if (tilemap[i] == NULL)
-	//	{
-	//		return 1;
-	//	}
-	//}
-	//for (int i = 0; i < maxTilesV; i++)
-	//{
-	//	for (int j = 0; j < maxTilesH; j++)
-	//	{
-	//		printf("%i, ", tilemap[i][j]);
-	//	}
-	//	printf("\n");
-	//}
+	char** tilemap = (char**)malloc(maxTilesV * sizeof(char*));
+	if (tilemap == NULL)
+	{
+		return 1;
+	}
+	//columna
+	for (int i = 0; i < maxTilesV; i++)
+	{
+		tilemap[i] = (char*)malloc(maxTilesH * sizeof(char));
+		memset(tilemap[i], 0, maxTilesH * sizeof(char));
+		if (tilemap[i] == NULL)
+		{
+			return 1;
+		}
+	}
+	for (int i = 0; i < maxTilesV; i++)
+	{
+		for (int j = 0; j < maxTilesH; j++)
+		{
+			printf("%i, ", tilemap[i][j]);
+		}
+		printf("\n");
+	}
 	//cargar nuestros tiles
 	enum TileType {
 		Pasto, Piedra, Tierra, Arena
@@ -295,7 +290,6 @@ int main()
 	tiles[1] = LoadTexture("Piedra.png");
 	tiles[2] = LoadTexture("Tierra.png");
 	tiles[3] = LoadTexture("Arena.png");
-	
 
 
 	int selectedMapIndex = -1;
@@ -304,11 +298,11 @@ int main()
 
 		//Menú
 		BeginDrawing();
-		ClearBackground(SKYBLUE);
-		DrawText("Elige el mapa ^-^ :", 220, 100, 85, DARKBLUE);
-		DrawText("1.- Mapa 1", 300, 250, 65, DARKGREEN);
-		DrawText("2.- Mapa 2", 300, 350, 65, DARKGRAY);
-		DrawText("3.- Mapa 3", 300, 450, 65, BROWN);
+		ClearBackground(BLACK);
+		DrawText("Elige el mapa ^-^ :", 220, 100, 85, WHITE);
+		DrawText("1.- Mapa 1", 300, 250, 65, SKYBLUE);
+		DrawText("2.- Mapa 2", 300, 350, 65, PURPLE);
+		DrawText("3.- Mapa 3", 300, 450, 65, PINK);
 		EndDrawing();
 
 		//Se elige el mapa de acuerdo a las teclas
@@ -350,18 +344,15 @@ int main()
 		// Update
 		for (GameObject* obj : gameobjects)
 		{
-			obj->Update();
+			if (obj->isEnabled())
+			{
+				obj->Update();
+			}
 		}
 
 		messageSystem->Update();
 
 
-
-		//if (IsKeyPressed(KEY_SPACE))
-		//{
-		//	panel->Show("Hola mundo");
-
-		//}
 		if (IsKeyPressed(KEY_M))
 		{
 			messageSystem->AgregarMensaje("¡Nuevo mensaje desbloqueado!");
@@ -369,7 +360,6 @@ int main()
 
 
 		UpdateMusicStream(bgm);
-		
 
 
 		// drawing
@@ -385,18 +375,23 @@ int main()
 		}
 
 		// draw some text using the default font
-		//DrawText("Tiles", 20, 20, 20, YELLOW);
-		
+		DrawText("Tiles", 20, 20, 20, YELLOW);
+
+		// draw our texture to the screen
+
 		for (GameObject* obj : gameobjects)
 		{
 			if (obj->isEnabled())
 			{
 				obj->Draw();
-
 			}
 		}
 
+
+
 		messageSystem->Draw();
+
+		//Panel
 
 
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
@@ -411,7 +406,7 @@ int main()
 	{
 		delete obj;
 	}
-	
+
 	delete messageSystem;
 	UnloadMusicStream(bgm);
 	CloseAudioDevice();

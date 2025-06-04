@@ -3,13 +3,16 @@
 #include "Inventory.h"
 #include <string>
 #include "GameObject.h"
+#include "Heap.h"
 
-class PlayerCharacter: public GameObject
+class PlayerCharacter : public GameObject
 {
 public:
-//Algunos componentes los vamos a sacar de player character y la enviamos a game object
-	
-	
+	//Algunos componentes los vamos a sacar de player character y la enviamos a game object
+	Vector2 position;
+	Heap heap;
+
+	Texture2D textureFoots;
 	float speed = 100.0f;
 
 
@@ -20,7 +23,8 @@ public:
 	Inventory* inventory;
 
 	PlayerCharacter(char* _name) : GameObject(_name)
-	{	}
+	{
+	}
 
 	void Start() override;
 	void Update() override;

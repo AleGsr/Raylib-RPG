@@ -5,7 +5,7 @@
 
 extern "C"
 {
-	#include "md5.h"
+#include "md5.h"
 
 }
 
@@ -23,22 +23,22 @@ protected:
 public:
 	Vector2 position;
 	Texture2D texture;
-	
+
 	bool drawDebugUID = false;
 
 
 	//constructor recibe un nombre y computa el md5
-	GameObject(char* _name) 
+	GameObject(char* _name)
 	{
 		name = _name;
 		md5String(_name, uid);
 		position = { 0,0 };
-		texture = { 0 }; 
+		texture = { 0 };
 	}
 
 	virtual void Start() = 0;
 	virtual void Update() = 0;
-	virtual void Draw() = 0;
+	virtual void Draw();
 
 	void printUID();
 

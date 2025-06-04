@@ -8,7 +8,6 @@ class ObjectChest: public GameObject
 {
 public:
 
-	float speed = 100.0f;
 
 	ObjectChest(char* _name) : GameObject(_name)
 	{

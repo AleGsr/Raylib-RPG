@@ -16,5 +16,4 @@ void ObjectChest::Update()
 void ObjectChest::Draw()
 {
 	DrawTexture(texture, position.x - 200, position.y - 200, WHITE);
-	DrawText(getUID().c_str(), position.x - 200, position.y - 210, 10, WHITE);
 }
