@@ -30,7 +30,7 @@ void PlayerCharacter::Draw()
 	//hud
 	DrawRectangle(10, 10, 100, 30, WHITE);
 
-	if (inventory != nullptr && inventory->currentItem != nullptr)
+	if (inventory != nullptr && inventory->currentItem != nullptr && inventory->currentItem->data != nullptr)
 	{
 		DrawText(inventory->currentItem->data->name.c_str(), 20, 20, 10, BLACK);
 	}

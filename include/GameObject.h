@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <vector>
+#include <cstdint>
 #include "raylib.h"
 #include "stdio.h"
 
@@ -12,15 +14,19 @@ extern "C"
 class GameObject
 {
 protected:
-	std::string name;
-	//unique id en MD5
-	uint8_t uid[16];
+
+
 
 	//si esta enabled se llaman los metodos de update y draw
 	bool enabled = true;
 
 
 public:
+	std::string name;
+	//unique id en MD5
+	uint8_t uid[16];
+
+
 	Vector2 position;
 	Texture2D texture;
 
@@ -54,6 +60,7 @@ public:
 		}
 		return uidString;
 	}
+
 
 	//getters y setters 
 	void setEnabled(bool _enabled)

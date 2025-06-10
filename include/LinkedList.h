@@ -7,12 +7,9 @@ class LinkedList
 {
 protected:
 	LLNode<T>* head;
-	LLNode<T>* tail;
 
 public:
 	//lista vacia
-	LinkedList() : head(nullptr), tail(nullptr) {}
-	LinkedList(LLNode<T> *_hd) : head(_hd) {};
 
 	//Imprimir el contenido
 	//void PrintElements();
@@ -25,45 +22,41 @@ public:
 		if (head == nullptr)
 		{
 			head = newNode;
-			tail = newNode;
 		}
-		//else
-		//{
-		//	/*tail->next = newNode;
-		//	tail = newNode;*/
-		//}
+		else
+		{
+			LLNode<T>* iter = head;
+			while (iter->next != nullptr)
+			{
+				iter = iter->next;
+			}
+			iter->next = newNode;
+			newNode->prev = iter;
+		}
 
-		//return newNode;
-
-		LLNode<T>* iter = head;
-		while (iter->next != nullptr)
-			iter = iter->next;
-		iter->next = new LLNode<T>(_data);
-		return iter->next;
-
+		return newNode;
 	}
 
 	//Remover el ultimo nodo
 	void RemoveLastNode()
 	{
-		if (head == nullptr)
-			return;
+		if (head == nullptr) return;
 
 		if (head->next == nullptr)
 		{
 			delete head;
 			head = nullptr;
-			tail = nullptr; 
 			return;
 		}
 
 		LLNode<T>* iter = head;
 		while (iter->next->next != nullptr)
+		{
 			iter = iter->next;
+		}
 
 		delete iter->next;
 		iter->next = nullptr;
-		tail = iter; 
 	}
 
 };

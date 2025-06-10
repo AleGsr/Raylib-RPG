@@ -5,7 +5,7 @@ void Enemy::Start()
 	texture = LoadTexture("Enemy.png");
 
 	//Posicion inicial
-	position = { 600, 600 };//Cambiar posición
+	position = { x, y };//Cambiar posición
 	float speed = 100;
 }
 
@@ -29,5 +29,5 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	DrawTexture(texture, position.x, position.y - 20, WHITE);
+	DrawTexture(texture, position.x, position.y, WHITE);
 }

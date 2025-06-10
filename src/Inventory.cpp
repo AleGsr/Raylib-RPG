@@ -2,47 +2,21 @@
 
 void Inventory::AddItem(Item* _item)
 {
-	currentItem = AddNode(_item);
-	_item->SetInventory(this);
-
+	LLNode<Item>* node = AddNode(_item);
+	if (currentItem == nullptr) // si no hay item seleccionado
+		currentItem = node;
 }
 
 void Inventory::nextItem()
 {
-	if (currentItem == nullptr)
-	{
-		currentItem = head;
-		return;
-	}
-	//todavia hay items en la lista
-	if (currentItem->next != nullptr)
-	{
+	if (currentItem && currentItem->next)
 		currentItem = currentItem->next;
-	}
-	else //ya llegamos a la cola, regresamos al head
-	{
-		currentItem = head;
-	}
 }
 
 void Inventory::prevItem()
 {
-	if (currentItem == nullptr)
-	{
-		currentItem = tail;
-		return;
-	}
-
-	if (currentItem->prev != nullptr)
-	{
+	if (currentItem && currentItem->prev)
 		currentItem = currentItem->prev;
-	}
-	else // ya estamos en el head, volvemos al tail
-	{
-		currentItem = tail;
-	}
-
-
 }
 
 void Inventory::debugPrintContents()

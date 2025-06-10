@@ -16,11 +16,18 @@ private:
 	PanelState state = hidden;
 
 
+
+
 public:
 	Vector2 position;
 	Vector2 size;
 	int timeOnScreen;
 	std::string message;
+
+
+	Texture2D logroIcon;
+	bool hasIcon;
+
 
 	
 	PanelMensaje(float posX, float width, float height, int _timeOnScreen)
@@ -31,6 +38,8 @@ public:
 		timer = 0;
 		desiredPositionY = -height;
 		state = hidden;
+
+		logroIcon = LoadTexture("logros/default.png");
 	}
 
 	PanelState GetState()
@@ -40,46 +49,54 @@ public:
 
 	void update()
 	{
-		if (state == hidden)
-		{
-			return;
-		}
+		if (state == hidden) return;
+
 		else if (state == moving)
 		{
-			//interpolacion de movimiento
 			if (position.y != desiredPositionY)
 			{
-				//lerp position
 				position.y += (desiredPositionY - position.y) * 1.0f * GetFrameTime();
-
 			}
-			if (position.y - desiredPositionY < 0.1f)
+
+			if (fabs(position.y - desiredPositionY) < 0.1f)
 			{
 				position.y = desiredPositionY;
-				state = showing;
-				timer = 0;
-			}
 
+				if (desiredPositionY > 0) // si se movió hacia abajo para mostrar
+				{
+					state = showing;
+					timer = 0;
+				}
+				else // si se movió hacia arriba para ocultarse
+				{
+					state = hidden;
+				}
+			}
 		}
 		else if (state == showing)
 		{
 			timer += GetFrameTime();
 			if (timer > timeOnScreen)
 			{
-				//start moving
-				desiredPositionY = -size.y - 10; //move off-screen
+				desiredPositionY = -size.y - 10;
 				state = moving;
 			}
 		}
-
 	}
 
 
 	void draw()
 	{
-		DrawRectangle(position.x, position.y, size.x,size.y, BEIGE);
+		// Dibuja el fondo del panel
+		DrawRectangle(position.x, position.y, size.x, size.y, BEIGE);
 		DrawRectangleLines(position.x, position.y, size.x, size.y, DARKBLUE);
-		DrawText(message.c_str(), position.x + 10, position.y + 10, 20, DARKGRAY);
+
+		// Dibuja imagen del logro (si está cargada)
+		DrawTexture(logroIcon, position.x + 10, position.y + 10, WHITE);
+
+		// Dibuja texto a la derecha de la imagen
+		DrawText(message.c_str(), position.x + 60, position.y + 15, 20, DARKGRAY);
+
 	}
 	
 	void Show(std::string msg)
@@ -92,6 +109,15 @@ public:
 		message = msg;
 		desiredPositionY = 10; // 10 pixels from the top of the screen
 		position.y = -size.y - 10; //start off-screen
+
+
+		// Libera la imagen anterior si no es la default
+		if (logroIcon.id != 0) UnloadTexture(logroIcon);
+
+		// Determina la ruta basada en el mensaje
+		std::string path = msg + ".png";
+		logroIcon = LoadTexture(path.c_str());
+
 	}
 
 

@@ -25,11 +25,11 @@ public:
     {
         panel.update();
 
-        // Si el panel está oculto y hay mensajes pendientes
+        // Solo cuando el panel está oculto, mostramos el siguiente mensaje
         if (panel.GetState() == hidden && !mensajes.isEmpty())
         {
-            std::string msg = mensajes.pop(); // toma el siguiente mensaje
-            panel.Show(msg); // mostrar en el panel
+            std::string msg = mensajes.pop();
+            panel.Show(msg);
         }
     }
 

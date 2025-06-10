@@ -14,7 +14,9 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include <string>
 #include <iostream>
 #include <limits>
-#include <cstdio>
+#include <cstdio>      
+#include <cstdint>     
+#include <map>
 
 
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
@@ -134,10 +136,11 @@ int main()
 	int a = 16;
 	LLNode<int>* nodo = new LLNode<int>(&a);
 
-	LinkedList<int>* lista = new LinkedList<int>(nodo);
-	lista->AddNode(new int(28));
-	lista->AddNode(new int(28));
-	lista->RemoveLastNode();
+	LinkedList<int>* lista = new LinkedList<int>();
+	lista->AddNode(new int(16));  // primer nodo
+	lista->AddNode(new int(28));  // segundo nodo
+	lista->AddNode(new int(28));  // tercer nodo
+	lista->RemoveLastNode();       // elimina último nodo
 
 	//Prueba de stack o pila
 	Stack<float> pila(10);
@@ -173,6 +176,9 @@ int main()
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
 
+
+
+
 	//std::vector<int> misdatos(15, 0);
 	//for (int i = 0; i < 15; i++)
 	//	std::cout << "valor: " << misdatos[i] << std::endl;
@@ -195,49 +201,53 @@ int main()
 	player->Start();
 	player->inventory = inventario;
 	player->drawDebugUID = true;
-	//player->printUID();
+
 
 
 	//hacer unos dos o tres enemigos que se muevan hacia el jugador
-	Enemy* enemy = new Enemy("enemy1");
-	enemy->playerFollow = player;
-	enemy->Start();
-	//enemy->printUID();
+	Enemy* enemy1 = new Enemy("enemy1",600,620 );
+	enemy1->playerFollow = player;
+	enemy1->Start();
+	Enemy* enemy2 = new Enemy("enemy2",600,700 );
+	enemy2->playerFollow = player;
+	enemy2->Start();
+
 
 
 	ObjectChest* objChest = new ObjectChest("objChest");
 	objChest->Start();
-	//objChest->printUID();
+
 
 
 	//Arreglo de objectos a la lista de GameObject
 	gameobjects.push_back(player);
-	gameobjects.push_back(enemy);
+	gameobjects.push_back(enemy1);
+	gameobjects.push_back(enemy2);
 	gameobjects.push_back(objChest);
 
 
 	//todos los gameobjects deberemos guardar su uid en esta tabla
-	//tablahash(nombre,uid)
+	std::map<std::string, std::string> tablaUID;
+
+	tablaUID[player->getUID()] = player->name;
+	tablaUID[enemy1->getUID()] = enemy1->name;
+	tablaUID[enemy2->getUID()] = enemy2->name;
+	tablaUID[objChest->getUID()] = objChest->name;
+
+	for (const auto& par : tablaUID) {
+		std::cout << "UID: " << par.first << " - Nombre: " << par.second << std::endl;
+	}
 
 
 
-	//panelmensaje
-	PanelMensaje* panel = new PanelMensaje(GetScreenWidth() - 210, 200, 50, 2);
-
-
-	//para la prueba, simularemos que obtiene de golpe un puñado de logros
-	panel->Show("thief");
-	panel->Show("gossip");
-	panel->Show("fisher");
-	panel->Show("hoarder");
-
+	//Pila de mensajes
 	messageSystem = new MessageSystem();
 
-	// Agrega varios logros a la pila de mensajes
-	messageSystem->AgregarMensaje("thief");
-	messageSystem->AgregarMensaje("gossip");
-	messageSystem->AgregarMensaje("fisher");
-	messageSystem->AgregarMensaje("hoarder");
+	 //Agrega varios logros a la pila de mensajes
+	messageSystem->AgregarMensaje("Evade_Enemigos");
+	messageSystem->AgregarMensaje("Explorador");
+	messageSystem->AgregarMensaje("Primeros_Pasos");
+	messageSystem->AgregarMensaje("Nuevo_Jugador");
 
 
 	//Prueba de calculo de hash md5 usando la biblioteca de zunawe
