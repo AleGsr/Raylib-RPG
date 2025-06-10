@@ -6,7 +6,6 @@ void ObjectChest::Start()
 
 	//Posicion inicial
 	position = { 500, 500 };//Cambiar posición
-	float speed = 100;
 }
 
 void ObjectChest::Update()

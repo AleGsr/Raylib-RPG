@@ -28,21 +28,18 @@ void PlayerCharacter::Draw()
 	}
 
 	//hud
-	DrawRectangle(10, 10, 100, 30, WHITE);
+	DrawRectangle(10, 10, 128, 43, DARKBROWN);
+	DrawRectangle(10 + 8, 10 + 8, 112, 27, WHITE);
 
-	if (inventory != nullptr && inventory->currentItem != nullptr && inventory->currentItem->data != nullptr)
+	if (inventory != nullptr && inventory->currentItem != nullptr)
 	{
-		DrawText(inventory->currentItem->data->name.c_str(), 20, 20, 10, BLACK);
+		DrawText(inventory->currentItem->data->name.c_str(), 30, 20, 17, DARKGRAY);
 	}
 	else
 	{
-		DrawText("EMPRT", 20, 20, 10, BLACK);
+		DrawText("EMPTY", 20, 20, 20, BLACK);
 	}
 
-
-
-
-	DrawText("Inventory", 10, 10, 10, BLACK);
 }
 
 void PlayerCharacter::Update()
@@ -97,7 +94,6 @@ void PlayerCharacter::Update()
 
 	if (IsKeyPressed(KEY_I))
 	{
-		//asume que siempre tiene inventory
 		inventory->nextItem();
 
 	}

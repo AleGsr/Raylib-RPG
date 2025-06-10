@@ -2,21 +2,54 @@
 
 void Inventory::AddItem(Item* _item)
 {
-	LLNode<Item>* node = AddNode(_item);
-	if (currentItem == nullptr) // si no hay item seleccionado
-		currentItem = node;
+	currentItem = AddNode(_item);
+	_item->SetInventory(this);
 }
 
 void Inventory::nextItem()
 {
-	if (currentItem && currentItem->next)
+	if (currentItem == nullptr)
+	{
+		currentItem = head;
+		return;
+	}
+
+	if (currentItem->next != nullptr)
+	{
 		currentItem = currentItem->next;
+	}
+	else
+	{
+		currentItem = head;
+	}
 }
 
 void Inventory::prevItem()
 {
-	if (currentItem && currentItem->prev)
+	if (currentItem == nullptr)
+	{
+		currentItem = head;
+		return;
+	}
+
+	if (currentItem->prev != nullptr)
+	{
 		currentItem = currentItem->prev;
+	}
+	else
+	{
+		if (head == nullptr)
+		{
+			std::cout << "ERROR: El inventario está vacío." << std::endl;
+			return;
+		}
+
+		LLNode<Item>* iter = head;
+		while (iter->next != nullptr)
+			iter = iter->next;
+
+		currentItem = iter;
+	}
 }
 
 void Inventory::debugPrintContents()

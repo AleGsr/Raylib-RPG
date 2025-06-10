@@ -11,20 +11,7 @@ void Enemy::Start()
 
 void Enemy::Update()
 {
-	//Caminar hacia el target que sería el player
-	if (playerFollow != nullptr)
-	{
-		Vector2 dir = Vector2Subtract(playerFollow->position, position);
-
-		float distance = Vector2Length(dir);
-
-		if (distance > 50)
-		{
-			dir = Vector2Normalize(dir);
-			position = Vector2Add(position, Vector2Scale(dir, speed * GetFrameTime()));
-		}
-	}
-
+	
 }
 
 void Enemy::Draw()

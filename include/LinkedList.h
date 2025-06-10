@@ -11,9 +11,6 @@ protected:
 public:
 	//lista vacia
 
-	//Imprimir el contenido
-	//void PrintElements();
-
 	//agrega elemento al final de la lista ligada
 	LLNode<T>* AddNode(T* _data)
 	{

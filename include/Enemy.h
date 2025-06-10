@@ -20,12 +20,5 @@ public:
 	void Draw() override;
 
 
-	//constructor heredado de GameObject
-	//Enemy(Vector2 pos, std::string _name, Texture tex) :
-	//	player(nullptr),
-	//	GameObject(pos, _name, tex)
-	//{
-	//}
-
 };
 

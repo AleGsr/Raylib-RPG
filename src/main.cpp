@@ -32,6 +32,7 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "MessageSystem.h"
 #include "GameObject.h"
 #include "ObjectChest.h"
+#include "ObjectHouse.h"
 #include "Heap.h"
 
 extern "C"
@@ -79,32 +80,9 @@ void LoadMap(Map2D& _map, size_t _x, size_t _y, const std::string& filename)
 Music LoadBGM(const char* filename)
 {
 	return LoadMusicStream(filename);
-	//const char* default = "LIRIUM.XM";
-	//std::fstream configfile("config.ini");
-	//if (configfile.is_open())
-	//{
-	//	std::string linea;
-	//	char buffer[64];
-	//	while (std::getline(configfile, linea))
-	//	{
-	//		std::cout << "Linea leída: " << linea << std::endl;
-	//		char* llave = strtok((char*)linea.c_str(), "="); //con el token =
-	//		if (strcmp("music", llave) == 0)
-	//		{
-	//			char* valor = strtok(NULL, "=");
-	//			std::cout << "Se encontró la llave music" << std::endl;
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	std::cout << "No se pudo abrir el config.ini, usando BGM default" << std::endl;
-	//	return LoadMusicStream("LIRIUM.XM");
-	//}
+
 }
 
-
-Vector2 posEnemy = { 0,0 };
 
 //Arreglo de game objects
 std::vector<GameObject*> gameobjects;
@@ -186,12 +164,20 @@ int main()
 	const char* musicTracks[3] = { "ILUETNI.XM", "TECNO1.XM", "LIRIUM.XM" };
 
 
+	//Objetos
+	ObjectChest* objChest = new ObjectChest("ObjChest");
+	objChest->Start();
+
+	ObjectHouse* objHouse = new ObjectHouse("ObjHouse");
+	objHouse->Start();
+
 
 	//Prubea de Inventario
 	Inventory* inventario = new Inventory();
 	inventario->AddItem(new Item("Espada", 1));
 	inventario->AddItem(new Item("Pocion", 2));
 	inventario->AddItem(new Item("Mondongo", 3));
+	inventario->AddItem(new Item("Llave", 4));
 	inventario->debugPrintContents();
 
 
@@ -205,25 +191,26 @@ int main()
 
 
 	//hacer unos dos o tres enemigos que se muevan hacia el jugador
-	Enemy* enemy1 = new Enemy("enemy1",600,620 );
-	enemy1->playerFollow = player;
+	Enemy* enemy1 = new Enemy("enemy1", 300, 400);
 	enemy1->Start();
-	Enemy* enemy2 = new Enemy("enemy2",600,700 );
-	enemy2->playerFollow = player;
+	Enemy* enemy2 = new Enemy("enemy2", 600, 700);
 	enemy2->Start();
+	Enemy* enemy3 = new Enemy("enemy3", 650, 200);
+	enemy3->Start();
 
 
 
-	ObjectChest* objChest = new ObjectChest("objChest");
-	objChest->Start();
+
 
 
 
 	//Arreglo de objectos a la lista de GameObject
+	gameobjects.push_back(objChest);
+	gameobjects.push_back(objHouse);
 	gameobjects.push_back(player);
 	gameobjects.push_back(enemy1);
 	gameobjects.push_back(enemy2);
-	gameobjects.push_back(objChest);
+	gameobjects.push_back(enemy3);
 
 
 	//todos los gameobjects deberemos guardar su uid en esta tabla
@@ -232,7 +219,11 @@ int main()
 	tablaUID[player->getUID()] = player->name;
 	tablaUID[enemy1->getUID()] = enemy1->name;
 	tablaUID[enemy2->getUID()] = enemy2->name;
+	tablaUID[enemy3->getUID()] = enemy3->name;
 	tablaUID[objChest->getUID()] = objChest->name;
+	tablaUID[objHouse->getUID()] = objHouse->name;
+
+
 
 	for (const auto& par : tablaUID) {
 		std::cout << "UID: " << par.first << " - Nombre: " << par.second << std::endl;

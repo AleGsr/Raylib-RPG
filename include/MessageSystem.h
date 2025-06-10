@@ -11,8 +11,8 @@ private:
 
 public:
     MessageSystem()
-        : mensajes(10), // máximo 10 mensajes en pila
-        panel(GetScreenWidth() - 310, 300, 60, 3) // esquina superior derecha
+        : mensajes(10), 
+        panel(GetScreenWidth() - 310, 300, 60, 3) 
     {
     }
 
@@ -25,7 +25,6 @@ public:
     {
         panel.update();
 
-        // Solo cuando el panel está oculto, mostramos el siguiente mensaje
         if (panel.GetState() == hidden && !mensajes.isEmpty())
         {
             std::string msg = mensajes.pop();

@@ -62,12 +62,12 @@ public:
 			{
 				position.y = desiredPositionY;
 
-				if (desiredPositionY > 0) // si se movió hacia abajo para mostrar
+				if (desiredPositionY > 0) 
 				{
 					state = showing;
 					timer = 0;
 				}
-				else // si se movió hacia arriba para ocultarse
+				else 
 				{
 					state = hidden;
 				}
@@ -89,6 +89,7 @@ public:
 	{
 		// Dibuja el fondo del panel
 		DrawRectangle(position.x, position.y, size.x, size.y, BEIGE);
+		DrawRectangle(position.x + 8, position.y + 8, size.x - 16, size.y - 16, WHITE);
 		DrawRectangleLines(position.x, position.y, size.x, size.y, DARKBLUE);
 
 		// Dibuja imagen del logro (si está cargada)
@@ -103,18 +104,14 @@ public:
 	{
 		//Cada vez que se mande a llamar show, guardar en un stack el mensaje deseado
 
-
 		state = moving;
 		timer = 0;
 		message = msg;
-		desiredPositionY = 10; // 10 pixels from the top of the screen
-		position.y = -size.y - 10; //start off-screen
+		desiredPositionY = 10; 
+		position.y = -size.y - 10; 
 
-
-		// Libera la imagen anterior si no es la default
 		if (logroIcon.id != 0) UnloadTexture(logroIcon);
 
-		// Determina la ruta basada en el mensaje
 		std::string path = msg + ".png";
 		logroIcon = LoadTexture(path.c_str());
 
